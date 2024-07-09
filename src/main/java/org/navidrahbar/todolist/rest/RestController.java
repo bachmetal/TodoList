@@ -1,5 +1,6 @@
 package org.navidrahbar.todolist.rest;
 
+import com.google.gson.Gson;
 import org.navidrahbar.todolist.entity.Todo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,5 +47,11 @@ public class RestController {
     public ResponseEntity<String> completeTodoById(@PathVariable int id) {
         todoService.completeTodoById(id);
         return ResponseEntity.ok("Todo with id " + id + " completed");
+    }
+
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAllTodos() {
+        todoService.deleteAll();
+        return ResponseEntity.ok("All todos deleted");
     }
 }

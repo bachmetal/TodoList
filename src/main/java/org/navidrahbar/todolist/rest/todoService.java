@@ -40,4 +40,8 @@ public class todoService {
         t.setCompleted(true);
         todoRepository.save(t);
     }
+
+    public void deleteAll() {
+        todoRepository.deleteAll();
+    }
 }
