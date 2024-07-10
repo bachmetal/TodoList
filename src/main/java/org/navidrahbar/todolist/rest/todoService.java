@@ -37,7 +37,7 @@ public class todoService {
 
     public void completeTodoById(int id) {
         Todo t = todoRepository.findById(id).orElseThrow();
-        t.setCompleted(true);
+        t.setCompleted(!t.getCompleted());
         todoRepository.save(t);
     }
 

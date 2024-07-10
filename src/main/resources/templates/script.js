@@ -11,18 +11,23 @@ const getTasks = async () => {
         todoList.innerHTML = ``;
         todos.forEach(todo => {
             const listItem = document.createElement('li');
+            let checkbox = document.createElement("img");
+
             listItem.innerHTML = todo.item;
             listItem.dataset.id = todo.id;
 
-            let checkbox = document.createElement("img");
-            checkbox.src = "images/unchecked.png";
+            if (todo.completed) {
+                listItem.style.textDecoration = "line-through";
+                checkbox.src = "images/checked.png";
+            } else {
+                checkbox.src = "images/unchecked.png";
+            }
             listItem.prepend(checkbox);
 
             const spanItem = document.createElement("span");
             spanItem.innerHTML = "X";
             listItem.appendChild(spanItem);
             todoList.appendChild(listItem);
-
         });
         await clickableX();
     } catch (error) {
@@ -52,7 +57,6 @@ function addTask() {
             })
             .then(data => {
                 console.log(data); // Process the data
-                inputBox.value = '';
             })
             .catch(error => console.error('There has been a problem with your fetch operation:', error));
         inputBox.value = '';
@@ -60,25 +64,45 @@ function addTask() {
 }
 
 async function deleteTask(id) {
-    if (confirm("Are you sure you want to delete?")) {
-        // console.log(id);
-        fetch(apiURL + id, {method: 'DELETE'})
-            .then(r => {
-                getTasks();
-            });
-    }
+    fetch(apiURL + id, {method: 'DELETE'})
+        .then(r => {
+            getTasks();
+        });
 }
 
 async function clickableX() {
     let lists = document.querySelectorAll("#list-container li");
     lists.forEach(list => {
         list.querySelector("span").addEventListener("click", (e) => {
-            deleteTask(e.target.parentElement.dataset.id);
-            // console.log("clicked " + e.target.parentElement.dataset.id);
+            if (confirm(`Are you sure you want to delete "${e.target.parentElement.innerText.replace("\nX", '')}"?`))
+                deleteTask(e.target.parentElement.dataset.id);
         });
     });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
     await getTasks();
+});
+
+document.addEventListener('click', async (e) => {
+    let id = e.target.dataset.id;
+    if (e.target.tagName === "LI" || e.target.tagName === "img") {
+        fetch(apiURL + id + "/complete", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    getTasks();
+                    return response.json(); // Handle JSON response here, if needed
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log(data); // Process the data
+            })
+            .catch(error => console.error('There has been a problem with your fetch operation:', error));
+    }
 });

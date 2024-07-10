@@ -1,6 +1,5 @@
 package org.navidrahbar.todolist.rest;
 
-import com.google.gson.Gson;
 import org.navidrahbar.todolist.entity.Todo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +45,7 @@ public class RestController {
     @PutMapping("/{id}/complete")
     public ResponseEntity<String> completeTodoById(@PathVariable int id) {
         todoService.completeTodoById(id);
-        return ResponseEntity.ok("Todo with id " + id + " completed");
+        return ResponseEntity.ok("Status todo with id " + id + " has been changed!");
     }
 
     @DeleteMapping("/all")

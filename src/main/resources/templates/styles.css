@@ -76,37 +76,22 @@ ul li:first-child{
     margin-top: 0;
 }
 
-/*ul li::before {*/
-/*    content: '';*/
-/*    position: absolute;*/
-/*    height: 28px;*/
-/*    width: 28px;*/
-/*    border-radius: 50px;*/
-/*    background-image: url("images/unchecked.png");*/
-/*    background-size: cover;*/
-/*    background-position: center;*/
-/*    top: 8px;*/
-/*    left: 6px;*/
-/*}*/
-
 ul li.checked {
     color: #555;
     text-decoration: line-through;
 }
 
-/*ul li.checked::before {*/
-/*    background-image: url("images/checked.png");*/
-/*}*/
-
 #list-container li span{
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
     font-size: 22px;
     text-align: center;
     border-radius: 50%;
     background: #b62982;
     color: #edeef0;
+    position: absolute;
+    right: 0;
 }
 
 #list-container li span:hover {
@@ -121,4 +106,5 @@ ul li.checked {
 
 img{
     height: 2rem;
+    margin-right: 10px;
 }
