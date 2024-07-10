@@ -161,12 +161,12 @@ async function editTask(id) {
         .then(response => {
             if (response.ok) {
                 getTasks();
-                return response.json(); // Handle JSON response here, if needed
+                return response.json();
             }
             throw new Error('Network response was not ok.');
         })
         .then(data => {
-            console.log(data); // Process the data
+            console.log(data);
         })
         .catch(error => console.error('There has been a problem with your fetch operation:', error));
 }
