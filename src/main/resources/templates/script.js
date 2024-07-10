@@ -26,6 +26,13 @@ const getTasks = async () => {
 
             const spanItem = document.createElement("span");
             spanItem.innerHTML = "X";
+            spanItem.id = "delete";
+
+            const editItem = document.createElement("span");
+            editItem.id = "edit";
+            editItem.onclick = editTask;
+
+            listItem.appendChild(editItem);
             listItem.appendChild(spanItem);
             todoList.appendChild(listItem);
         });
@@ -67,7 +74,7 @@ async function deleteTask(id) {
     fetch(apiURL + id, {method: 'DELETE'})
         .then(r => {
             getTasks();
-            console.log(r.json());
+            return r.json();
         });
 }
 
@@ -76,7 +83,7 @@ async function clearAll() {
         fetch(apiURL + "all", {method: 'DELETE'})
             .then(r => {
                 getTasks();
-                console.log(r.json());
+                return r.json();
             });
     }
 }
@@ -84,7 +91,7 @@ async function clearAll() {
 async function clickableX() {
     let lists = document.querySelectorAll("#list-container li");
     lists.forEach(list => {
-        list.querySelector("span").addEventListener("click", (e) => {
+        list.querySelector("#delete").addEventListener("click", (e) => {
             if (confirm(`Are you sure you want to delete "${e.target.parentElement.innerText.replace("\nX", '')}"?`))
                 deleteTask(e.target.parentElement.dataset.id);
         });
@@ -117,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 document.addEventListener('click', async (e) => {
     let id = e.target.dataset.id;
-    if (e.target.tagName === "LI" || e.target.tagName === "img") {
+    if (e.target.tagName === "LI") {
         fetch(apiURL + id + "/complete", {
             method: 'PUT',
             headers: {
@@ -137,3 +144,39 @@ document.addEventListener('click', async (e) => {
             .catch(error => console.error('There has been a problem with your fetch operation:', error));
     }
 });
+
+async function editTask(id) {
+    id = id.target.parentElement.dataset.id;
+    let newTask = prompt("Edit task:");
+    if (newTask === null) return;
+    await fetch(apiURL + id, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            item: newTask
+        })
+    })
+        .then(response => {
+            if (response.ok) {
+                getTasks();
+                return response.json(); // Handle JSON response here, if needed
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            console.log(data); // Process the data
+        })
+        .catch(error => console.error('There has been a problem with your fetch operation:', error));
+}
+
+//
+// async function editButton(id) {
+//     let lists = document.querySelectorAll("#list-container li");
+//     lists.forEach(list => {
+//         list.querySelector("#edit").addEventListener("click", (e) => {
+//             editTask(e.target.parentElement.dataset.id);
+//         });
+//     });
+// }
