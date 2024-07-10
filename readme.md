@@ -1,151 +1,169 @@
-# Todo List Project
+# TodoList Project
 
-## Author
+Welcome to the TodoList project! This README file provides all the necessary information to set up, run, and maintain the project.
 
-**Navid Rahbar**  
+## Table of Contents
+
+- [Description](#description)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Database Setup](#database-setup)
+- [API Endpoints](#api-endpoints)
+- [Frontend Setup](#frontend-setup)
+- [Contact](#contact)
 
 ## Description
 
-This project is a simple Todo List web application built using Spring Boot for the backend and JavaScript for the frontend. It allows users to add, edit, complete, and delete tasks. The completed tasks are visually marked by a strikethrough.
+This project is a simple TodoList application developed using Spring Boot for the backend and a basic HTML/JavaScript frontend.
 
 ## Features
 
-- Quickly add new tasks
-- Edit existing tasks
-- Complete tasks by clicking on them
-- Delete tasks individually
-- Clear all tasks at once
+- Add, edit, and delete tasks.
+- Mark tasks as completed.
+- View list of all tasks.
+- Clear all tasks.
 
 ## Technologies Used
 
-- Backend: Spring Boot, Java
-- Frontend: JavaScript, HTML, CSS
-- Database: MariaDB
+- Java 17
+- Spring Boot 3.3.1
+- Spring Data JPA
+- MariaDB
+- HTML/CSS/JavaScript
 
 ## Getting Started
 
+Follow these steps to get the project up and running on your local machine.
+
 ### Prerequisites
 
-- Java 11 or higher
-- Spring Boot 2.7.x or higher
-- MariaDB 10.5 or higher
+- Java 17
+- Maven
+- A running MariaDB instance
 
-### Installing
+### Installation
 
-1. **Clone the Repository**
-    ```bash
-    git clone https://github.com/username/todolist.git
-    cd todolist
-    ```
+1. **Clone the repository**
+   
+   ```bash
+   git clone https://github.com/bachmetal/TodoList.git
+   cd TodoList
+   ```
 
-2. **Set up the Database**
+2. **Build the project**
+   
+   ```bash
+   mvn clean install
+   ```
 
-    - Install and configure MariaDB.
-    - Create a new database:
-      ```sql
-      CREATE DATABASE todolist;
-      ```
-    - Modify `application.properties` with your database configuration:
-      ```
-      spring.datasource.url=jdbc:mariadb://localhost:3306/todolist
-      spring.datasource.username=your-username
-      spring.datasource.password=your-password
-      spring.datasource.driverClassName=org.mariadb.jdbc.Driver
-      spring.jpa.hibernate.ddl-auto=validate
-      spring.jpa.show-sql=true
-      spring.jpa.properties.hibernate.format_sql=true
-      spring.application.name=TodoList
-      server.port=8080
-      ```
+## Database Setup
 
-3. **Run the Application**
+### MariaDB Setup
 
-    Use Maven to build and run the application:
-    ```bash
-    mvn clean install
-    mvn spring-boot:run
-    ```
+1. **Install MariaDB**
 
-### Running the Project
+   If you don't have MariaDB installed, you can download and install it from the official MariaDB website: https://mariadb.org/
 
-Once the application is running, you can navigate to `http://localhost:8080` in your web browser to see the Todo List web application.
+2. **Start the MariaDB service**
 
+   ```bash
+   sudo systemctl start mariadb
+   ```
 
-### Usage
+3. **Create the database and user**
 
-- **Add a Task**: Enter a task in the input box and press "Add". The task will appear in the list below.
-  
-- **Complete a Task**: Click on the checkbox next to a task to mark it as complete. The task's text will be struck through to indicate completion.
-  
-- **Edit a Task**: Click on the "Edit" button next to a task to modify its contents. Enter the new text in the prompt that appears and press "OK" to save changes.
-  
-- **Delete a Task**: Click on the "X" button next to a task to delete it. A confirmation prompt will appear; click "OK" to confirm deletion.
-  
-- **Clear All Tasks**: Press the "Clear All" button to delete all tasks. A confirmation prompt will appear; click "OK" to confirm.
+   Open the MariaDB command-line tool by running:
 
-### API Endpoints
+   ```bash
+   sudo mysql -u root -p
+   ```
 
-- **Retrieve All Todos**
-  ```
-  GET /api/todos/
-  ```
-  Returns a list of all todos.
+   Once you are in the MariaDB shell, run the following commands to create a database and a user:
 
-- **Retrieve Todo by ID**
-  ```
-  GET /api/todos/{id}
-  ```
-  Returns a specific todo by its ID.
+   ```sql
+   CREATE DATABASE todolist;
+   CREATE USER 'root'@'localhost' IDENTIFIED BY '';
+   GRANT ALL PRIVILEGES ON todolist.* TO 'root'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
 
-- **Add a New Todo**
-  ```
-  POST /api/todos/
-  ```
-  Adds a new todo. The request body should contain the todo item.
+4. **Update the application properties**
 
-- **Update a Todo by ID**
-  ```
-  PUT /api/todos/{id}
-  ```
-  Updates a specific todo with new information. The request body should contain the updated todo item.
+   Ensure that your `src/main/resources/application.properties` file contains the following:
 
-- **Mark a Todo as Complete by ID**
-  ```
-  PUT /api/todos/{id}/complete
-  ```
-  Marks a specific todo as complete.
+   ```properties
+   spring.datasource.url=jdbc:mariadb://localhost:3306/todolist
+   spring.datasource.username=root
+   spring.datasource.password=
+   spring.datasource.driverClassName=org.mariadb.jdbc.Driver
+   spring.jpa.hibernate.ddl-auto=validate
+   spring.jpa.show-sql=true
+   spring.jpa.properties.hibernate.format_sql=true
+   spring.application.name=TodoList
+   server.port=8080
+   ```
 
-- **Delete a Todo by ID**
-  ```
-  DELETE /api/todos/{id}
-  ```
-  Deletes a specific todo by its ID.
+## API Endpoints
 
-- **Delete All Todos**
-  ```
-  DELETE /api/todos/all
-  ```
-  Deletes all todos.
+### Get All Todos
 
-### Frontend
+```http
+GET /api/todos/
+```
 
-The frontend interacts with the backend using JavaScript fetch API calls. The UI updates dynamically based on user interactions and server responses.
+### Get Todo By ID
 
-#### Scripts
+```http
+GET /api/todos/{id}
+```
 
-The main JS file (`main.js`) handles the following tasks:
+### Add Todo
 
-- Fetching tasks from the server when the DOM content is loaded.
-- Adding a task by sending a POST request to the server.
-- Editing a task by sending a PUT request to the server.
-- Marking a task as complete by sending a PUT request to the server.
-- Deleting a task by sending a DELETE request to the server.
-- Clearing all tasks by sending a DELETE request to the server.
+```http
+POST /api/todos/
+```
 
-### License
+### Update Todo
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+```http
+PUT /api/todos/{id}
+```
 
-### Acknowledgments
+### Mark Todo as Complete
 
-- Thanks to the Spring Boot and MariaDB teams for their excellent frameworks and tools.
+```http
+PUT /api/todos/{id}/complete
+```
+
+### Delete Todo
+
+```http
+DELETE /api/todos/{id}
+```
+
+### Delete All Todos
+
+```http
+DELETE /api/todos/all
+```
+
+## Frontend Setup
+
+1. Open `index.html` in a web browser.
+2. The application will be available at `http://localhost:8080`.
+3. Interact with the todo list by adding, editing, deleting, and marking tasks as completed.
+
+## Contact
+
+If you have any questions or feedback, please contact me at:
+
+**Name:** Navid Rahbar  
+**Location:** Vienna  
+**Email:** navid.rahbar87@gmail.com
+
+Feel free to create an issue or a pull request if you find any bugs or have suggestions for improvements.
+
+---
+
+Thank you for using the TodoList application! I hope you find it useful.
