@@ -67,7 +67,18 @@ async function deleteTask(id) {
     fetch(apiURL + id, {method: 'DELETE'})
         .then(r => {
             getTasks();
+            console.log(r.json());
         });
+}
+
+async function clearAll() {
+    if (confirm("Are you sure you want to delete all tasks?")) {
+        fetch(apiURL + "all", {method: 'DELETE'})
+            .then(r => {
+                getTasks();
+                console.log(r.json());
+            });
+    }
 }
 
 async function clickableX() {
@@ -76,6 +87,26 @@ async function clickableX() {
         list.querySelector("span").addEventListener("click", (e) => {
             if (confirm(`Are you sure you want to delete "${e.target.parentElement.innerText.replace("\nX", '')}"?`))
                 deleteTask(e.target.parentElement.dataset.id);
+        });
+        list.querySelector("img").addEventListener("click", (e) => {
+            fetch(apiURL + e.target.parentElement.dataset.id + "/complete", {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        getTasks();
+                        return response.json(); // Handle JSON response here, if needed
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log(data); // Process the data
+                })
+                .catch(error => console.error('There has been a problem with your fetch operation:', error));
+
         });
     });
 }

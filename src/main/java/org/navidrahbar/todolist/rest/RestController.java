@@ -4,6 +4,9 @@ import org.navidrahbar.todolist.entity.Todo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @org.springframework.web.bind.annotation.RestController
 @CrossOrigin(origins = "http://localhost:63342")
 @RequestMapping("/api/todos")
@@ -15,42 +18,44 @@ public class RestController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<String> getTodos() {
+    public ResponseEntity<List<Todo>> getTodos() {
         return ResponseEntity.ok(todoService.getTodos());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<String> getTodoById(@PathVariable int id) {
-        return ResponseEntity.ok(todoService.getTodoById(id));
+    public ResponseEntity<Todo> getTodoById(@PathVariable int id) {
+        return ResponseEntity.ok(todoService.getTodoById(id).orElseThrow());
     }
 
     @PostMapping("/")
-    public ResponseEntity<String> addTodo(@RequestBody Todo task) {
+    public ResponseEntity<Todo> addTodo(@RequestBody Todo task) {
         todoService.addTodo(task);
-        return ResponseEntity.ok("Todo added");
+        return ResponseEntity.ok(task);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteTodoById(@PathVariable int id) {
+    public ResponseEntity<Optional<Todo>> deleteTodoById(@PathVariable int id) {
+        Optional<Todo> d = todoService.getTodoById(id);
         todoService.deleteTodoById(id);
-        return ResponseEntity.ok("Todo with id " + id + " deleted");
+        return ResponseEntity.ok(d);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTodoById(@PathVariable int id, @RequestBody Todo task) {
+    public ResponseEntity<Todo> updateTodoById(@PathVariable int id, @RequestBody Todo task) {
         todoService.updateTodoById(id, task);
-        return ResponseEntity.ok("Todo with id " + id + " updated");
+        return ResponseEntity.ok(todoService.getTodoById(id).orElseThrow());
     }
 
     @PutMapping("/{id}/complete")
-    public ResponseEntity<String> completeTodoById(@PathVariable int id) {
+    public ResponseEntity<Todo> completeTodoById(@PathVariable int id) {
         todoService.completeTodoById(id);
-        return ResponseEntity.ok("Status todo with id " + id + " has been changed!");
+        return ResponseEntity.ok(todoService.getTodoById(id).orElseThrow());
     }
 
     @DeleteMapping("/all")
-    public ResponseEntity<String> deleteAllTodos() {
+    public ResponseEntity<List<Todo>> deleteAllTodos() {
+        List<Todo> todos = todoService.getTodos();
         todoService.deleteAll();
-        return ResponseEntity.ok("All todos deleted");
+        return ResponseEntity.ok(todos);
     }
 }
